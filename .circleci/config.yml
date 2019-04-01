@@ -25,9 +25,7 @@ jobs:
           command: |
             echo "current build number is ${CIRCLE_BUILD_NUM}"
             pwd        
-            gradle build 
-            cd /build/distributions/
-
+            gradle build
             ls -al
             pwd
             cd ..
