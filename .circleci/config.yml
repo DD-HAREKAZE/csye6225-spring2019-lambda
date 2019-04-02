@@ -21,18 +21,7 @@ jobs:
             sudo pip install awscli
             aws configure set default.region us-east-1
 
-      - run:
-          name: Build Artifact
-          command: |
-            cd webapp
-            pwd
-            ls -al
-            mvn clean install
-            cd target/
-            ls -al
-            cd ../
-            pwd
-            ls -al
+
       - run:
           name: Zip Artifact
           command: |
