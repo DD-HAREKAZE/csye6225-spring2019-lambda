@@ -31,7 +31,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
         Table table = dynamoDB.getTable("csye6225");
 
         Item item = table.getItem("id", email);
-        if (item == null || || item.getNumber("TTl").longValue()<ttl-1200) {
+        if (item == null ||item.getNumber("TTl").longValue()<ttl-1200) {
             try {
                 PutItemOutcome outcome = table.putItem(new Item().
                         withPrimaryKey("id", email).withString("Token", uuid).withNumber("TTl", ttl));
