@@ -20,7 +20,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
     public Object handleRequest(SNSEvent request, Context context) {
 
         String email = request.getRecords().get(0).getSNS().getMessage();
-
+        System.out.println(email);
         String uuid = UUID.randomUUID().toString();
         String token = null;
 
@@ -31,7 +31,9 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
         Table table = dynamoDB.getTable("csye6225");
 
         Item item = table.getItem("id", email);
+
         if (item == null  || item.getNumber("TTl").longValue()<ttl-1200) {
+
             try {
                 PutItemOutcome outcome = table.putItem(new Item().
                         withPrimaryKey("id", email).withString("Token", uuid).withNumber("TTl", ttl));
@@ -41,7 +43,8 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
                 System.err.println(e.getMessage());
             }
 
-            final String FROM = System.getenv("FROM");
+
+            final String FROM = System.getenv("fromaddr");
             final String SUBJECT = "Password Reset Email";
             final String HTMLBODY = "<h1>Amazon SES Application for Password Reset</h1>"
                     + "<p>The password reset link: " + "<a href='example.com/reset?email=" + email + "&token=" + token + "</a>";

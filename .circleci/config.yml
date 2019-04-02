@@ -21,14 +21,12 @@ jobs:
             sudo pip install awscli
             aws configure set default.region us-east-1
 
-
       - run:
           name: Zip Artifact
           command: |
             echo "current build number is ${CIRCLE_BUILD_NUM}"
             pwd        
-            gradle build 
-            cd build/distributions/
+            gradle build
 
             ls -al
             pwd
