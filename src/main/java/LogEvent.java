@@ -41,7 +41,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
                 System.err.println(e.getMessage());
             }
 
-            final String FROM = System.getenv("FROM");
+            final String FROM = System.getenv("fromaddr");
             final String SUBJECT = "Password Reset Email";
             final String HTMLBODY = "<h1>Amazon SES Application for Password Reset</h1>"
                     + "<p>The password reset link: " + "<a href='example.com/reset?email=" + email + "&token=" + token + "</a>";
