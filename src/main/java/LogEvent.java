@@ -30,36 +30,21 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
         DynamoDB dynamoDB = new DynamoDB(DBclient);
         Table table = dynamoDB.getTable("csye6225");
 
-        QuerySpec spec = new QuerySpec().withKeyConditionExpression("email = :email")
-                .withValueMap(new ValueMap().withString(":email", email));
-
-        ItemCollection<QueryOutcome> items = table.query(spec);
-
-        Iterator<Item> iterator = items.iterator();
-        Item item = null;
-        while (iterator.hasNext()) {
-            item = iterator.next();
-            if (item.getNumber("ttl").longValue() > System.currentTimeMillis() / 1000L) {
-                token = item.getString("token");
-                break;
-            }
-            System.out.println(item.toJSONPretty());
-        }
-        if (token == null) {
+        Item item = table.getItem("id", email);
+        if (item == null || || item.getNumber("TTl").longValue()<ttl-1200) {
             try {
                 PutItemOutcome outcome = table.putItem(new Item().
-                        withPrimaryKey("email", email).withString("token", uuid).withNumber("ttl", ttl));
+                        withPrimaryKey("id", email).withString("Token", uuid).withNumber("TTl", ttl));
                 token = uuid;
             } catch (AmazonServiceException e) {
                 System.err.println("Unable to add item: " + email + "with token " + uuid);
                 System.err.println(e.getMessage());
             }
 
-            final String FROM = "assignment7@csye6225-spring2019-yuanke.me";
+            final String FROM = System.getenv("FROM");
             final String SUBJECT = "Password Reset Email";
             final String HTMLBODY = "<h1>Amazon SES Application for Password Reset</h1>"
-                    + "<p>The password reset link: " + "<a href='https://aws.amazon.com/ses/'>" + "http://csye6225-spring-yuanke.me/reset?email="
-                    + email + "&token=" + token + "</a>";
+                    + "<p>The password reset link: " + "<a href='example.com/reset?email=" + email + "&token=" + token + "</a>";
             final String TEXTBODY = "This email was sent through Amazon SES using the AWS SDK for Java.";
 
             try {
