@@ -48,7 +48,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
         if (token == null) {
             try {
                 PutItemOutcome outcome = table.putItem(new Item().
-                        withPrimaryKey("email", email).withString("token", uuid).withNumber("ttl", ttl));
+                        withPrimaryKey("id", email).withString("Token", uuid).withNumber("TTl", ttl));
                 token = uuid;
             } catch (AmazonServiceException e) {
                 System.err.println("Unable to add item: " + email + "with token " + uuid);
