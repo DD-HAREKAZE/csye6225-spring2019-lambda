@@ -1,0 +1,46 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install packages
+          command: sudo apt-get update && sudo apt-get install wget zip unzip python2.7 python-pip -y
+
+      - run:
+          name: Install packages
+          command: sudo apt-get update && sudo apt-get install gradle -y
+
+      - run:
+          name: Install awscli
+          command: |
+            sudo pip install awscli
+            aws configure set default.region us-east-1
+      - run:
+          name: Zip Artifact
+          command: |
+            echo "current build number is ${CIRCLE_BUILD_NUM}"
+            pwd        
+            gradle build
+            ls -al
+            pwd
+            cd ..
+            pwd
+            ls -al
+      - run:
+          name: Upload Artifact to S3
+          command: |
+            cd build
+            aws s3 sync distributions s3://${CODE_DEPLOY_S3_BUCKET}
+      - run:
+          name: Make CodeDeploy API call
+          command: |
+              aws lambda update-function-code\
+                   --region ${AWS_REGION}\
+                   --function-name Sentemail\
+                   --s3-bucket=${CODE_DEPLOY_S3_BUCKET}\
+                   --s3-key csye6225-0.0.1.zip\

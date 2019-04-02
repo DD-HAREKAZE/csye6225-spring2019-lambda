@@ -20,7 +20,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
     public Object handleRequest(SNSEvent request, Context context) {
 
         String email = request.getRecords().get(0).getSNS().getMessage();
-
+        System.out.println(email);
         String uuid = UUID.randomUUID().toString();
         String token = null;
 
@@ -40,6 +40,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
                 System.err.println("Unable to add item: " + email + "with token " + uuid);
                 System.err.println(e.getMessage());
             }
+
 
             final String FROM = System.getenv("fromaddr");
             final String SUBJECT = "Password Reset Email";
