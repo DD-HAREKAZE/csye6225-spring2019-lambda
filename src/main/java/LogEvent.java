@@ -20,7 +20,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
     public Object handleRequest(SNSEvent request, Context context) {
 
         String email = request.getRecords().get(0).getSNS().getMessage();
-
+        System.out.println(email);
         String uuid = UUID.randomUUID().toString();
         String token = null;
 
