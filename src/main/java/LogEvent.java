@@ -30,22 +30,8 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
         DynamoDB dynamoDB = new DynamoDB(DBclient);
         Table table = dynamoDB.getTable("csye6225");
 
-        QuerySpec spec = new QuerySpec().withKeyConditionExpression("email = :email")
-                .withValueMap(new ValueMap().withString(":email", email));
-
-        ItemCollection<QueryOutcome> items = table.query(spec);
-
-        Iterator<Item> iterator = items.iterator();
-        Item item = null;
-        while (iterator.hasNext()) {
-            item = iterator.next();
-            if (item.getNumber("ttl").longValue() > System.currentTimeMillis() / 1000L) {
-                token = item.getString("token");
-                break;
-            }
-            System.out.println(item.toJSONPretty());
-        }
-        if (token == null) {
+        Item item = table.getItem("id", email);
+        if (item == null || || item.getNumber("TTl").longValue()<ttl-1200) {
             try {
                 PutItemOutcome outcome = table.putItem(new Item().
                         withPrimaryKey("id", email).withString("Token", uuid).withNumber("TTl", ttl));
