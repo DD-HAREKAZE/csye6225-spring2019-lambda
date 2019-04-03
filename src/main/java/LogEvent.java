@@ -2,9 +2,10 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.*;
-import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
-import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
@@ -12,7 +13,6 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
 
-import java.util.Iterator;
 import java.util.UUID;
 
 public class LogEvent implements RequestHandler<SNSEvent, Object> {
@@ -47,7 +47,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
             final String FROM = "assignment7@"+System.getenv("fromaddr");
             final String SUBJECT = "Password Reset Email";
             final String HTMLBODY = "<h1>Amazon SES Application for Password Reset</h1>"
-                    + "<p>The password reset link: " + "<a href='example.com/reset?email=" + email + "&token=" + token + "</a>";
+                    + "The password reset link: " + "<a href='example.com/reset?email=" + email + "&token=" + token + "</a>";
             final String TEXTBODY = "This email was sent through Amazon SES using the AWS SDK for Java.";
 
             try {
