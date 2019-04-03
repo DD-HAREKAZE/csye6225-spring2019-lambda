@@ -37,7 +37,7 @@ jobs:
           name: Upload Artifact to S3
           command: |
             cd build
-            aws s3 sync distributions s3://${CODE_DEPLOY_S3_BUCKET}
+            aws s3 cp --recursive distributions s3://${CODE_DEPLOY_S3_BUCKET}
       - run:
           name: Make CodeDeploy API call
           command: |
