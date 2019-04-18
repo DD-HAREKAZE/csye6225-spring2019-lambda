@@ -49,7 +49,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
 		this.initDynamoDbClient();
 		Item existUser = this.dynamo.getTable(TABLE_NAME).getItem("id", userName);
 
-		if (existUser == null|| item.getNumber("TTl").longValue()<ttl-1200) {
+		if (existUser == null|| existUser.getNumber("TTl").longValue()<ttl-1200) {
 			this.dynamo.getTable(TABLE_NAME).putItem(new PutItemSpec()
 					.withItem(new Item().withString("id", userName).withString("Token", token).withLong("TTl",1200)));
 			this.body = "Password reset link here:";
