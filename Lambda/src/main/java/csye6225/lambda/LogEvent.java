@@ -44,7 +44,7 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
 
 		String userName = request.getRecords().get(0).getSNS().getMessage();
 		String token = UUID.randomUUID().toString();
-
+		long ttl = System.currentTimeMillis() / 1000L + 1200;
  		final String HTMLBODY = "<h1>Amazon SES Application for Password Reset</h1>"+ "The password reset link: " + "example.com/reset?email=" + userName + "&token=" + token;
 		this.initDynamoDbClient();
 		Item existUser = this.dynamo.getTable(TABLE_NAME).getItem("id", userName);
