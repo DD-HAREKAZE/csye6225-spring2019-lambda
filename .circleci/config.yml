@@ -49,4 +49,8 @@ jobs:
       - run:
           name: Make CodeDeploy API call
           command: |
-            echo "Hello"
+            aws lambda update-function-code\
+                   --region ${AWS_REGION}\
+                   --function-name SendEmailOnSNS\
+                   --s3-bucket=${CODE_DEPLOY_S3_BUCKET}\
+                   --s3-key Lambda-0.0.1-SNAPSHOT.jar\
