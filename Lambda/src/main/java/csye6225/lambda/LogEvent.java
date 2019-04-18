@@ -67,9 +67,8 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		return null;
 		} 
-		
+		return null;
 	}
 
 	private void initDynamoDbClient() {
