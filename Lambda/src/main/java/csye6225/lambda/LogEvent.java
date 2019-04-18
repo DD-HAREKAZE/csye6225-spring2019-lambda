@@ -44,12 +44,12 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
 
 		String userName = request.getRecords().get(0).getSNS().getMessage();
 		String token = UUID.randomUUID().toString();
-		long ttl = System.currentTimeMillis() / 1000L + 1200;
+		long ttl = System.currentTimeMillis() / 1000L + 0;
  		final String HTMLBODY = "<h1>Amazon SES Application for Password Reset</h1>"+ "The password reset link: " + "example.com/reset?email=" + userName + "&token=" + token;
 		this.initDynamoDbClient();
 		Item existUser = this.dynamo.getTable(TABLE_NAME).getItem("id", userName);
 
-		if (existUser == null|| existUser.getNumber("TTl").longValue()<ttl-1200) {
+		if (existUser == null) {
 			this.dynamo.getTable(TABLE_NAME).putItem(new PutItemSpec()
 					.withItem(new Item().withString("id", userName).withString("Token", token).withLong("TTl",ttl)));
 			this.body = "Password reset link here:";
