@@ -44,20 +44,22 @@ public class LogEvent implements RequestHandler<SNSEvent, Object> {
 
 		String userName = request.getRecords().get(0).getSNS().getMessage();
 		String token = UUID.randomUUID().toString();
+
+ 		final String HTMLBODY = "<h1>Amazon SES Application for Password Reset</h1>"+ "The password reset link: " + "example.com/reset?email=" + userName + "&token=" + token;
 		this.initDynamoDbClient();
 		Item existUser = this.dynamo.getTable(TABLE_NAME).getItem("id", userName);
 
 		if (existUser == null) {
 			this.dynamo.getTable(TABLE_NAME).putItem(new PutItemSpec()
 					.withItem(new Item().withString("id", userName).withString("Token", token).withLong("TTl", 1200)));
-			this.body = "Password reset link here";
+			this.body = "Password reset link here:"+;
 		} else {
 			this.body = "Password reset link aready sent";
 		}
 		try {
 			Content subject = new Content().withData(SUBJECT);
 			Content textbody = new Content().withData(body);
-			Body body = new Body().withText(textbody);
+			Body body = new Body().withText(textbody).withHtml(new Content().withCharset("UTF-8").withData(HTMLBODY));
 			Message message = new Message().withSubject(subject).withBody(body);
 			SendEmailRequest emailRequest = new SendEmailRequest()
 					.withDestination(new Destination().withToAddresses(userName)).withMessage(message).withSource(FROM);
